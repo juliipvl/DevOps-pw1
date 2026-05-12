@@ -33,6 +33,18 @@ services:
     networks:
       - backend
 
+# DEFAULT_SERVER = {
+#     'name': 'Clincapture Server',
+#     'host': 'postgres',  # Use the service name defined in Docker Compose
+#     'port': 5432,
+#     'maintenance_db': 'captivate',
+#     'username': 'clincapture',
+#     'password': 'clincapture',
+#     'sslmode': 'prefer'
+# }
+
+# SERVERS = [DEFAULT_SERVER]
+
 networks:
   backend:
 

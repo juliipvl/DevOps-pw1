@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hostpath-reader-pod
+  labels:
+    app: hostpath-reader
+spec:
+  containers:
+    - name: reader
+      image: busybox
+      command: ["/bin/sh", "-c"]
+      args:
+        - touch /node-logs/app.log && tail -f /node-logs/app.log
+      volumeMounts:
+        - name: node-shared-logs
+          mountPath: /node-logs
+  volumes:
+    - name: node-shared-logs
+      hostPath:
+        path: /data/shared-logs
+        type: DirectoryOrCreate

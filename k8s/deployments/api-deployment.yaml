@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: api
+          image: todo-api:1.0
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 4444
+          env:
+            - name: DATABASE_URL
+              value: "postgresql://user:pass@db-service:5432/tododb"
+          command: ["/bin/sh", "-c"]
+          args:
+            - sleep 20 && ./run-api.sh

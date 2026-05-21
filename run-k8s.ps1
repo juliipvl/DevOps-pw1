@@ -7,21 +7,29 @@ minikube addons enable metrics-server
 Write-Host "Building API image inside Minikube..." -ForegroundColor Cyan
 minikube image build -t todo-api:1.0 .
 
-Write-Host "Applying high-level Kubernetes configuration..." -ForegroundColor Cyan
-kubectl apply -f k8s\high-level-pods.yaml
+Write-Host "Applying Kubernetes deployments..." -ForegroundColor Cyan
+kubectl apply -f k8s\deployments
+
+Write-Host "Applying Kubernetes services..." -ForegroundColor Cyan
+kubectl apply -f k8s\services
 
 Write-Host "Applying hostPath volume configuration..." -ForegroundColor Cyan
-kubectl apply -f k8s\hostpath-volume.yaml
+kubectl apply -f k8s\volumes
 
-Write-Host "Waiting for pods to become ready..." -ForegroundColor Cyan
-kubectl wait --for=condition=Ready pod/db-pod --timeout=180s
-kubectl wait --for=condition=Ready pod/api-pod --timeout=180s
-kubectl wait --for=condition=Ready pod/pgadmin-pod --timeout=180s
+Write-Host "Waiting for deployments to become ready..." -ForegroundColor Cyan
+kubectl rollout status deployment/db-deployment --timeout=180s
+kubectl rollout status deployment/api-deployment --timeout=180s
+kubectl rollout status deployment/pgadmin-deployment --timeout=180s
+
+Write-Host "Waiting for hostPath pods to become ready..." -ForegroundColor Cyan
 kubectl wait --for=condition=Ready pod/hostpath-writer-pod --timeout=180s
 kubectl wait --for=condition=Ready pod/hostpath-reader-pod --timeout=180s
 
 Write-Host "Waiting for metrics-server..." -ForegroundColor Cyan
 Start-Sleep -Seconds 90
+
+Write-Host "Deployments:" -ForegroundColor Green
+kubectl get deployments
 
 Write-Host "Pods:" -ForegroundColor Green
 kubectl get pods
